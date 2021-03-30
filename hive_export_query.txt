@@ -1,0 +1,788 @@
+--Below is the hive query sqript which we used to export a slice. Please note that table T1 undergoes an additional process after theis query (where we remove the gps locations and place clsuterings instead)
+
+set start = 1459468800000;
+set finish = 1467331200000;
+set slice = 2016_Q2;
+use sherlock_2;
+
+set tab = t0;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid, 
+version, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_deviceid)),1,15) as telephoney_deviceid, 
+telephoney_networkcountryiso, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_networkoperator)),1,15) as telephoney_networkoperator,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_networkoperatorname)),1,15) as telephoney_networkoperatorname,
+telephoney_networktype, 
+telephoney_phonetype, 
+telephoney_simcountryiso, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_simoperator)),1,15) as telephoney_simoperator,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_simoperatorname)),1,15) as telephoney_simoperatorname,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_simserialnumber)),1,15) as telephoney_simserialnumber, 
+telephoney_simstate, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,telephoney_subscriberid)),1,15) as telephoney_subscriberid,
+telephoney_hassicccard, 
+telephoney_timestemp, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,hardware_wifimac)),1,15) as hardware_wifimac,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,hardware_bluetoothmac)),1,15) as hardware_bluetoothmac,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,hardware_androidid)),1,15) as hardware_androidid,
+hardware_brand, 
+hardware_model, 
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,hardware_deviceid)),1,15) as hardware_deviceid,
+systeminfo_os_version, 
+systeminfo_baseband_version, 
+systeminfo_sdk, 
+systeminfo_kernelinfo, 
+systeminfo_timestemp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+
+set tab = t1;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+version,
+googleplayloc_speed,
+googleplayloc_maccuracy,
+googleplayloc_maltitude,
+googleplayloc_mlatitude,
+googleplayloc_mlongitude,
+googleplayloc_timestamp,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,celltower_cid)),1,15) as celltower_cid,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,celltower_lac)),1,15) as celltower_lac,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,celltower_psc)),1,15) as celltower_psc,
+celltower_timestamp,
+celltower_type,
+status_alarmvol,
+status_brightnessmode,
+status_brightness_file,
+status_brightness_settings,
+status_dtmfvol,
+status_musicvol,
+status_notificationvol,
+status_orientation,
+status_ringermode,
+status_ringtonevol,
+status_systemvol,
+status_voicecallvol,
+status_timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+set tab = t2;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+version,
+timestemp,
+accelerometerstat_x_dc_fft,
+accelerometerstat_x_first_idx_fft,
+accelerometerstat_x_first_val_fft,
+accelerometerstat_x_fourth_idx_fft,
+accelerometerstat_x_fourth_val_fft,
+accelerometerstat_x_mean,
+accelerometerstat_x_mean_fft,
+accelerometerstat_x_median,
+accelerometerstat_x_median_fft,
+accelerometerstat_x_second_idx_fft,
+accelerometerstat_x_second_val_fft,
+accelerometerstat_x_third_idx_fft,
+accelerometerstat_x_third_val_fft,
+accelerometerstat_x_var,
+accelerometerstat_x_var_fft,
+accelerometerstat_y_dc_fft,
+accelerometerstat_y_first_idx_fft,
+accelerometerstat_y_first_val_fft,
+accelerometerstat_y_fourth_idx_fft,
+accelerometerstat_y_fourth_val_fft,
+accelerometerstat_y_mean,
+accelerometerstat_y_mean_fft,
+accelerometerstat_y_median,
+accelerometerstat_y_median_fft,
+accelerometerstat_y_second_idx_fft,
+accelerometerstat_y_second_val_fft,
+accelerometerstat_y_third_idx_fft,
+accelerometerstat_y_third_val_fft,
+accelerometerstat_y_var,
+accelerometerstat_y_var_fft,
+accelerometerstat_z_dc_fft,
+accelerometerstat_z_first_idx_fft,
+accelerometerstat_z_first_val_fft,
+accelerometerstat_z_fourth_idx_fft,
+accelerometerstat_z_fourth_val_fft,
+accelerometerstat_z_mean,
+accelerometerstat_z_mean_fft,
+accelerometerstat_z_median,
+accelerometerstat_z_median_fft,
+accelerometerstat_z_second_idx_fft,
+accelerometerstat_z_second_val_fft,
+accelerometerstat_z_third_idx_fft,
+accelerometerstat_z_third_val_fft,
+accelerometerstat_z_var,
+accelerometerstat_z_var_fft,
+accelerometerstat_cov_y_x,
+accelerometerstat_cov_z_x,
+accelerometerstat_cov_z_y,
+gyroscopestat_x_dc_fft,
+gyroscopestat_x_first_idx_fft,
+gyroscopestat_x_first_val_fft,
+gyroscopestat_x_fourth_idx_fft,
+gyroscopestat_x_fourth_val_fft,
+gyroscopestat_x_mean,
+gyroscopestat_x_mean_fft,
+gyroscopestat_x_median,
+gyroscopestat_x_median_fft,
+gyroscopestat_x_second_idx_fft,
+gyroscopestat_x_second_val_fft,
+gyroscopestat_x_third_idx_fft,
+gyroscopestat_x_third_val_fft,
+gyroscopestat_x_var,
+gyroscopestat_x_var_fft,
+gyroscopestat_y_dc_fft,
+gyroscopestat_y_first_idx_fft,
+gyroscopestat_y_first_val_fft,
+gyroscopestat_y_fourth_idx_fft,
+gyroscopestat_y_fourth_val_fft,
+gyroscopestat_y_mean,
+gyroscopestat_y_mean_fft,
+gyroscopestat_y_median,
+gyroscopestat_y_median_fft,
+gyroscopestat_y_second_idx_fft,
+gyroscopestat_y_second_val_fft,
+gyroscopestat_y_third_idx_fft,
+gyroscopestat_y_third_val_fft,
+gyroscopestat_y_var,
+gyroscopestat_y_var_fft,
+gyroscopestat_z_dc_fft,
+gyroscopestat_z_first_idx_fft,
+gyroscopestat_z_first_val_fft,
+gyroscopestat_z_fourth_idx_fft,
+gyroscopestat_z_fourth_val_fft,
+gyroscopestat_z_mean,
+gyroscopestat_z_mean_fft,
+gyroscopestat_z_median,
+gyroscopestat_z_median_fft,
+gyroscopestat_z_second_idx_fft,
+gyroscopestat_z_second_val_fft,
+gyroscopestat_z_third_idx_fft,
+gyroscopestat_z_third_val_fft,
+gyroscopestat_z_var,
+gyroscopestat_z_var_fft,
+gyroscopestat_cov_y_x,
+gyroscopestat_cov_z_x,
+gyroscopestat_cov_z_y,
+magneticfield_x_dc_fft,
+magneticfield_x_first_idx_fft,
+magneticfield_x_first_val_fft,
+magneticfield_x_fourth_idx_fft,
+magneticfield_x_fourth_val_fft,
+magneticfield_x_mean,
+magneticfield_x_mean_fft,
+magneticfield_x_median,
+magneticfield_x_median_fft,
+magneticfield_x_second_idx_fft,
+magneticfield_x_second_val_fft,
+magneticfield_x_third_idx_fft,
+magneticfield_x_third_val_fft,
+magneticfield_x_var,
+magneticfield_x_var_fft,
+magneticfield_y_dc_fft,
+magneticfield_y_first_idx_fft,
+magneticfield_y_first_val_fft,
+magneticfield_y_fourth_idx_fft,
+magneticfield_y_fourth_val_fft,
+magneticfield_y_mean,
+magneticfield_y_mean_fft,
+magneticfield_y_median,
+magneticfield_y_median_fft,
+magneticfield_y_second_idx_fft,
+magneticfield_y_second_val_fft,
+magneticfield_y_third_idx_fft,
+magneticfield_y_third_val_fft,
+magneticfield_y_var,
+magneticfield_y_var_fft,
+magneticfield_z_dc_fft,
+magneticfield_z_first_idx_fft,
+magneticfield_z_first_val_fft,
+magneticfield_z_fourth_idx_fft,
+magneticfield_z_fourth_val_fft,
+magneticfield_z_mean,
+magneticfield_z_mean_fft,
+magneticfield_z_median,
+magneticfield_z_median_fft,
+magneticfield_z_second_idx_fft,
+magneticfield_z_second_val_fft,
+magneticfield_z_third_idx_fft,
+magneticfield_z_third_val_fft,
+magneticfield_z_var,
+magneticfield_z_var_fft,
+magneticfield_cov_y_x,
+magneticfield_cov_z_x,
+magneticfield_cov_z_y,
+pressure_dc_fft,
+pressure_first_idx_fft,
+pressure_first_val_fft,
+pressure_fourth_idx_fft,
+pressure_fourth_val_fft,
+pressure_mean,
+pressure_mean_fft,
+pressure_median,
+pressure_median_fft,
+pressure_second_idx_fft,
+pressure_second_val_fft,
+pressure_third_idx_fft,
+pressure_third_val_fft,
+pressure_var,
+pressure_var_fft,
+orientationprobe_azimuth_mean,
+orientationprobe_azimuth_median,
+orientationprobe_azimuth_middle_sample,
+orientationprobe_pitch_mean,
+orientationprobe_pitch_median,
+orientationprobe_pitch_middle_sample,
+orientationprobe_roll_mean,
+orientationprobe_roll_median,
+orientationprobe_roll_middle_sample,
+rotationvector_costhetaover2_mean,
+rotationvector_costhetaover2_median,
+rotationvector_costhetaover2_middle_sample,
+rotationvector_xsinthetaover2_mean,
+rotationvector_xsinthetaover2_median,
+rotationvector_xsinthetaover2_middle_sample,
+rotationvector_ysinthetaover2_mean,
+rotationvector_ysinthetaover2_median,
+rotationvector_ysinthetaover2_middle_sample,
+rotationvector_zsinthetaover2_mean,
+rotationvector_zsinthetaover2_median,
+rotationvector_zsinthetaover2_middle_sample,
+linearacceleration_cov_y_x,
+linearacceleration_cov_z_x,
+linearacceleration_cov_z_y,
+linearacceleration_x_dc_fft,
+linearacceleration_x_first_idx_fft,
+linearacceleration_x_first_val_fft,
+linearacceleration_x_fourth_idx_fft,
+linearacceleration_x_fourth_val_fft,
+linearacceleration_x_mean,
+linearacceleration_x_mean_fft,
+linearacceleration_x_median,
+linearacceleration_x_median_fft,
+linearacceleration_x_middle_sample,
+linearacceleration_x_second_idx_fft,
+linearacceleration_x_second_val_fft,
+linearacceleration_x_third_idx_fft,
+linearacceleration_x_third_val_fft,
+linearacceleration_x_var,
+linearacceleration_x_var_fft,
+linearacceleration_y_dc_fft,
+linearacceleration_y_first_idx_fft,
+linearacceleration_y_first_val_fft,
+linearacceleration_y_fourth_idx_fft,
+linearacceleration_y_fourth_val_fft,
+linearacceleration_y_mean,
+linearacceleration_y_mean_fft,
+linearacceleration_y_median,
+linearacceleration_y_median_fft,
+linearacceleration_y_middle_sample,
+linearacceleration_y_second_idx_fft,
+linearacceleration_y_second_val_fft,
+linearacceleration_y_third_idx_fft,
+linearacceleration_y_third_val_fft,
+linearacceleration_y_var,
+linearacceleration_y_var_fft,
+linearacceleration_z_dc_fft,
+linearacceleration_z_first_idx_fft,
+linearacceleration_z_first_val_fft,
+linearacceleration_z_fourth_idx_fft,
+linearacceleration_z_fourth_val_fft,
+linearacceleration_z_mean,
+linearacceleration_z_mean_fft,
+linearacceleration_z_median,
+linearacceleration_z_median_fft,
+linearacceleration_z_middle_sample,
+linearacceleration_z_second_idx_fft,
+linearacceleration_z_second_val_fft,
+linearacceleration_z_third_idx_fft,
+linearacceleration_z_third_val_fft,
+linearacceleration_z_var,
+linearacceleration_z_var_fft,
+accelerometerstat_x_middle_sample,
+accelerometerstat_y_middle_sample,
+accelerometerstat_z_middle_sample,
+gyroscopestat_x_middle_sample,
+gyroscopestat_y_middle_sample,
+gyroscopestat_z_middle_sample,
+magneticfield_x_middle_sample,
+magneticfield_y_middle_sample,
+magneticfield_z_middle_sample,
+pressure_middle_sample
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+set tab = t3;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+version,
+audio_diffsecs,
+audio_l1norm,
+audio_l2norm,
+audio_linfnorm,
+audpsd_acrossfreqbands0,
+audpsd_acrossfreqbands1,
+audpsd_acrossfreqbands2,
+audpsd_acrossfreqbands3,
+audio_mfccs0,
+audio_mfccs1,
+audio_mfccs2,
+audio_mfccs3,
+audio_mfccs4,
+audio_mfccs5,
+audio_mfccs6,
+audio_mfccs7,
+audio_mfccs8,
+audio_mfccs9,
+audio_mfccs10,
+audio_mfccs11,
+audio_timestemp,
+light_accuracy,
+light_lux,
+light_timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+set tab = t4;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+version,
+traffic_mobilerxbytes,
+traffic_mobilerxpackets,
+traffic_mobiletxbytes,
+traffic_mobiletxpackets,
+traffic_totalrxbytes,
+traffic_totalrxpackets,
+traffic_totaltxbytes,
+traffic_totaltxpackets,
+traffic_totalwifirxbytes,
+traffic_totalwifirxpackets,
+traffic_totalwifitxbytes,
+traffic_totalwifitxpackets,
+traffic_timestamp,
+battery_charge_type,
+battery_current_avg,
+battery_health,
+battery_icon_small,
+battery_invalid_charger,
+battery_level,
+battery_online,
+battery_plugged,
+battery_present,
+battery_scale,
+battery_status,
+battery_technology,
+battery_temperature,
+battery_timestamp,
+battery_voltage,
+cpuhertz,
+cpu_0,
+cpu_1,
+cpu_2,
+cpu_3,
+total_cpu,
+totalmemory_freesize,
+totalmemory_max_size,
+totalmemory_total_size,
+totalmemory_used_size,
+memtotal,
+memfree,
+buffers,
+cached,
+swapcached,
+active,
+inactive,
+active_anon,
+inactive_anon,
+active_file,
+inactive_file,
+unevictable,
+mlocked,
+hightotal,
+highfree,
+lowtotal,
+lowfree,
+swaptotal,
+swapfree,
+dirty,
+writeback,
+anonpages,
+mapped,
+shmem,
+slab,
+sreclaimable,
+sunreclaim,
+kernelstack,
+pagetables,
+commitlimit,
+committed_as,
+vmalloctotal,
+vmallocused,
+vmallocchunk,
+msmgpio_cpu0,
+msmgpio_sum_cpu123,
+wcd9xxx_cpu0,
+wcd9xxx_sum_cpu123,
+pn547_cpu0,
+pn547_sum_cpu123,
+cypress_touchkey_cpu0,
+cypress_touchkey_sum_cpu123,
+synaptics_rmi4_i2c_cpu0,
+synaptics_rmi4_i2c_sum_cpu123,
+sec_headset_detect_cpu0,
+sec_headset_detect_sum_cpu123,
+flip_cover_cpu0,
+flip_cover_sum_cpu123,
+home_key_cpu0,
+home_key_sum_cpu123,
+volume_down_cpu0,
+volume_down_sum_cpu123,
+volume_up_cpu0,
+volume_up_sum_cpu123,
+companion_cpu0,
+companion_sum_cpu123,
+slimbus_cpu0,
+slimbus_sum_cpu123,
+function_call_interrupts_cpu0,
+function_call_interrupts_sum_cpu123,
+cpu123_intr_prs,
+tot_user,
+tot_nice,
+tot_system,
+tot_idle,
+tot_iowait,
+tot_irq,
+tot_softirq,
+ctxt,
+btime,
+processes,
+procs_running,
+procs_blocked,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,connectedwifi_ssid)),1,15) as connectedwifi_ssid, 
+connectedwifi_level,
+internal_availableblocks,
+internal_blockcount,
+internal_freeblocks,
+internal_blocksize,
+internal_availablebytes,
+internal_freebytes,
+internal_totalbytes,
+external_availableblocks,
+external_blockcount,
+external_freeblocks,
+external_blocksize,
+external_availablebytes,
+external_freebytes,
+external_totalbytes
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+set tab = userpresentprobe;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = wifi;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,ssid)),1,15) as ssid, 
+capabilities,
+freq,
+level
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = allbroadcastprobe;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+CASE action
+WHEN 'android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.a2dp.profile.action.PLAYING_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.adapter.action.LOCAL_NAME_CHANGED' THEN ' '
+WHEN 'android.bluetooth.adapter.action.SCAN_MODE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.adapter.action.STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.device.action.ACL_CONNECTED' THEN ' '
+WHEN 'android.bluetooth.device.action.ACL_DISCONNECTED' THEN ' '
+WHEN 'android.bluetooth.device.action.BOND_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.device.action.CLASS_CHANGED' THEN ' '
+WHEN 'android.bluetooth.device.action.FOUND' THEN ' '
+WHEN 'android.bluetooth.device.action.NAME_CHANGED' THEN ' '
+WHEN 'android.bluetooth.device.action.UUID' THEN ' '
+WHEN 'android.bluetooth.headset.profile.action.AUDIO_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.headset.profile.action.CONNECTION_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED' THEN ' '
+WHEN 'android.bluetooth.pan.profile.action.CONNECTION_STATE_CHANGED' THEN ' '
+WHEN 'android.intent.action.PHONE_STATE' THEN ' '
+WHEN 'android.intent.action.PROXY_CHANGE' THEN ' '
+WHEN 'android.net.conn.CONNECTIVITY_CHANGE' THEN ' '
+WHEN 'android.net.wifi.p2p.CONNECTION_STATE_CHANGE' THEN ' '
+WHEN 'android.net.wifi.p2p.DISCOVERY_STATE_CHANGE' THEN ' '
+WHEN 'android.net.wifi.p2p.PEERS_CHANGED' THEN ' '
+WHEN 'android.net.wifi.p2p.STATE_CHANGED' THEN ' '
+WHEN 'android.net.wifi.p2p.THIS_DEVICE_CHANGED' THEN ' '
+WHEN 'android.net.wifi.STATE_CHANGE' THEN ' '
+WHEN 'android.net.wifi.supplicant.CONNECTION_CHANGE' THEN ' '
+WHEN 'android.net.wifi.supplicant.STATE_CHANGE' THEN ' '
+WHEN 'android.speech.tts.engine.TTS_DATA_INSTALLED' THEN ' '
+WHEN 'android.speech.tts.TTS_QUEUE_PROCESSING_COMPLETED' THEN ' '
+ELSE extras END as extras,
+action,
+timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = application;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+applicationname,
+cpu_usage,
+packagename,
+packageuid,
+uidrxbytes,
+uidrxpackets,
+uidtxbytes,
+uidtxpackets,
+cguest_time,
+cmaj_flt,
+cstime,
+cutime,
+dalvikprivatedirty,
+dalvikpss,
+dalvikshareddirty,
+guest_time,
+importance,
+importancereasoncode,
+importancereasonpid,
+lru,
+nativeprivatedirty,
+nativepss,
+nativeshareddirty,
+num_threads,
+otherprivatedirty,
+otherpss,
+othershareddirty,
+pgid,
+pid,
+ppid,
+priority,
+rss,
+rsslim,
+sid,
+start_time,
+state,
+stime,
+tcomm,
+utime,
+vsize,
+version_code,
+version_name,
+sherlock_version,
+tgpid,
+flags,
+wchan,
+exit_signal,
+minflt,
+cminflt,
+majflt,
+startcode,
+endcode,
+nice,
+itrealvalue,
+processor,
+rt_priority
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish};
+
+
+
+set tab = apppackages;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+action,
+apppackage,
+appuid,
+app_name,
+installsrc,
+installtime,
+packagehash,
+permissions,
+versionname,
+versioncode,
+sherlock_version
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+set tab = bluetooth;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+bluetooth_appearance,
+bluetooth_class,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,bluetooth_maddress)),1,15) as bluetooth_maddress, 
+bluetooth_mremotebrsf,
+bluetooth_mvaluenrec,
+bluetooth_mvaluewbs,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,bluetooth_name)),1,15) as bluetooth_name, 
+bluetooth_rssi,
+bluetooth_timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = call;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,address)),1,15) as address, 
+date,
+duration,
+fromcontacts,
+type
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = moriartyprobe;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+details,
+action,
+actiontype,
+sessiontype,
+version,
+sessionid,
+behavior
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+
+set tab = screenon;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+screenon,
+timestamp
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
+
+
+set tab = sms;
+INSERT OVERWRITE LOCAL DIRECTORY '/home/username/${hiveconf:slice}/${hiveconf:tab}'
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY  '\t' ESCAPED BY '"' LINES TERMINATED BY '\n' 
+STORED AS TEXTFILE
+select userid,
+uuid,
+substr(reflect("org.apache.commons.codec.digest.DigestUtils", "sha256Hex", concat(userid,address)),1,15) as address, 
+containsurl,
+date,
+fromcontacts,
+type
+from ${hiveconf:tab}
+where uuid >= ${hiveconf:start}
+and uuid < ${hiveconf:finish}
+order by uuid;
